@@ -1,0 +1,153 @@
+# MEGAPAK for CUDA 12.4
+
+image:https://github.com/YanWenKun/ComfyUI-Docker/actions/workflows/build-cu124-megapak.yml/badge.svg["GitHub Workflow Status",link="https://github.com/YanWenKun/ComfyUI-Docker/actions/workflows/build-cu124-megapak.yml"]
+
+https://hub.docker.com/r/yanwk/comfyui-boot/tags?name=cu124-megapak[View on <Docker Hub>]
+
+
+* Derived from `cu121-megapak`
+
+* Dev kits:
+** CUDA dev kit (12.4)
+** Python dev package (3.12)
+** GCC C++ (13)
+** OpenCV-devel
+** CMake, Ninja...
+
+* Latest stable version of xFormers + PyTorch
+
+* Tools:
+** Vim, Fish, fd...
+
+## Usage
+
+.Run with Docker
+[source,sh]
+----
+mkdir -p storage
+
+docker run -it --rm \
+  --name comfyui-cu124-mega \
+  --gpus all \
+  -p 8188:8188 \
+  -v "$(pwd)"/storage:/root \
+  -e CLI_ARGS="--fast" \
+  yanwk/comfyui-boot:cu124-megapak
+----
+
+.Run with Podman
+[source,bash]
+----
+mkdir -p storage
+
+podman run -it --rm \
+  --name comfyui-cu124-mega \
+  --device nvidia.com/gpu=all \
+  --security-opt label=disable \
+  -p 8188:8188 \
+  -v "$(pwd)"/storage:/root \
+  -e CLI_ARGS="--fast" \
+  docker.io/yanwk/comfyui-boot:cu124-megapak
+----
+
+## Skip downloading
+
+The container will run the download script on the first start
+and will create an empty file `.download-complete` as a marker when the download is complete.
+
+If the download does not complete, on the next start, the download script will resume downloading (using aria2's mechanism).
+
+You can create the `.download-complete` file to skip the download script.
+
+[source,sh]
+----
+mkdir -p storage
+touch storage/.download-complete
+----
+
+
+[[cli-args]]
+## CLI_ARGS Reference
+
+[%autowidth,cols=2]
+|===
+|args |description
+
+|--lowvram
+|If your GPU only has 4GB VRAM.
+
+|--novram
+|If adding __--lowvram__ still out-of-memory.
+
+|--cpu
+|Run on CPU. It's pretty slow.
+
+|--use-pytorch-cross-attention
+|If you don't want to use xFormers. This may perform well on WSL2, but significantly slower on Linux hosts.
+
+|--preview-method taesd
+|Enable higher-quality previews with TAESD. ComfyUI-Manager would override this (settings available in Manager UI).
+
+|--front-end-version Comfy-Org/ComfyUI_frontend@latest
+|Use the most up-to-date frontend version.
+
+|--fast
+|Enable experimental optimizations.
+Currently the only optimization is float8_e4m3fn matrix multiplication on
+4000/ADA series Nvidia cards or later.
+Might break things/lower quality.
+See the 
+https://github.com/comfyanonymous/ComfyUI/commit/9953f22fce0ba899da0676a0b374e5d1f72bf259[commit].
+|===
+
+More `CLI_ARGS` available at 
+https://github.com/comfyanonymous/ComfyUI/blob/master/comfy/cli_args.py[ComfyUI].
+
+
+[[env-vars]]
+## Environment Variables Reference
+
+[cols="2,2,3"]
+|===
+|Variable|Example Value|Memo
+
+|HTTP_PROXY +
+HTTPS_PROXY
+|http://localhost:1081 +
+http://localhost:1081
+|Set HTTP proxy.
+
+|PIP_INDEX_URL
+|'https://pypi.org/simple'
+|Set mirror site for Python Package Index.
+
+|HF_ENDPOINT
+|'https://huggingface.co'
+|Set mirror site for HuggingFace Hub.
+
+|HF_TOKEN
+|'hf_your_token'
+|Set HuggingFace Access Token.
+https://huggingface.co/settings/tokens[More]
+
+|HF_HUB_ENABLE_HF_TRANSFER
+|1
+|Enable HuggingFace Hub experimental high-speed file transfers.
+Only make sense if you have >1000Mbps and VERY STABLE connection (e.g. cloud server).
+https://huggingface.co/docs/huggingface_hub/hf_transfer[More]
+
+|TORCH_CUDA_ARCH_LIST
+|7.5 +
+or +
+'5.2+PTX;6.0;6.1+PTX;7.5;8.0;8.6;8.9+PTX'
+|Build target for PyTorch and its extensions.
+For most users, no setup is needed as it will be automatically selected on Linux.
+When needed, you only need to set one build target just for your GPU.
+https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/[More]
+
+|CMAKE_ARGS
+|(Default) +
+'-DBUILD_opencv_world=ON -DWITH_CUDA=ON -DCUDA_FAST_MATH=ON -DWITH_CUBLAS=ON -DWITH_NVCUVID=ON'
+|Build options for CMAKE for projects using CUDA.
+
+|===

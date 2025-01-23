@@ -1,0 +1,81 @@
+# 用于 ComfyUI 的 Docker 镜像
+
+https://github.com/comfyanonymous/ComfyUI[ComfyUI]
+是一套使用节点工作流的 Stable Diffusion 图形界面。 +
+本仓库所构建的
+https://hub.docker.com/r/yanwk/comfyui-boot[Docker 镜像]
+包含其依赖项，及下载／启动脚本。
+
+
+## 镜像标签
+
+* link:cu124-cn/README.adoc[`cu124-cn`]
+
+** 针对国内网络环境重写
+** 从下载到首次启动均无需代理
+** 提供整合与精简两种安装方式
+** 额外提供 `Dockerfile-cn` 以便本地构建
+** 推荐初次尝试 ComfyUI 的国内用户使用
+
+* link:cu121/README.zh.adoc[`cu121`, `latest`]
+
+** 经典版本，简洁易上手，但需要良好的网络连接
+** 默认仅安装基本的 ComfyUI 与 Manager
+** 镜像中预装大量依赖项，方便后续无痛安装热门自定义节点（扩展插件）
+** 容器内使用低特权用户运行（便于 WSL2 部署，仅该镜像如此设计）
+** 不推荐 Podman 与 rootless 用户使用（改用本仓库内其他镜像均可）
+** 使用 CUDA 12.1 与 Python 3.11
+
+* link:cu121-megapak/README.zh.adoc[`cu121-megapak`, `megapak`]
+
+** 大型整合包，包含开发组件
+** 容器内使用 root 用户运行（便于 rootless 部署）
+** 使用 CUDA 12.1 与 Python 3.11
+
+* link:cu124-megapak/README.zh.adoc[`cu124-megapak`]
+
+** 同上，但使用 CUDA 12.4 与 Python 3.12（在新 GPU 上可能性能更佳）
+
+* link:rocm/README.zh.adoc[`rocm`]
+
+** 适用于 AMD GPU
+
+* link:nightly/README.adoc[`nightly`]
+
+** 使用最新预览版的 PyTorch
+
+* https://github.com/MrForExample/ComfyUI-3D-Pack[ComfyUI-3D-Pack] 专用镜像：
+
+** link:comfy3d-pt22/README.zh.adoc[`comfy3d-pt22`]
+基于 PyTorch 2.2，使用
+https://github.com/MrForExample/ComfyUI-3D-Pack/tree/3b4e715939376634c68aa4c1c7d4ea4a8665c098[2024/06/23]
+版本的 Comfy3D
+
+** link:comfy3d-pt23/README.zh.adoc[`comfy3d-pt23`]
+基于 PyTorch 2.3，使用
+https://github.com/MrForExample/ComfyUI-3D-Pack/tree/bdc5e3029ed96d9fa25e651e12fce1553a4422c4[2024/10/18]
+版本的 Comfy3D
+
+** link:comfy3d-pt25/README.zh.adoc[`comfy3d-pt25`]
+基于 PyTorch 2.5，使用最新版本的 Comfy3D
+
+
+## 2024 九月重大更新
+
+* 新增 `cu124-cn`
+* 新增 `nightly`
+
+## 2024 七月重大更新
+
+* `latest` 更名 `cu121` （保留原名）
+* `megapak` 更名  `cu121-megapak` （保留原名）
+* 新增 `cu124-megapak`
+* 新增 `comfy3d-pt22`, `comfy3d-pt23`
+* 其他镜像移除 comfy3d 支持
+
+
+## 声明
+
+代码使用
+link:LICENSE[木兰公共许可证, 第2版] 。
+中英双语哦！

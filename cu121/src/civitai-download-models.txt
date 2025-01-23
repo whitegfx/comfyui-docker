@@ -1,0 +1,93 @@
+# https://github.com/YanWenKun/ComfyUI-Docker/blob/main/cu121/README.adoc
+
+https://www.gfx.cz/comfyui/models/epicrealism_naturalSinRC1VAE.safetensors
+  dir=checkpoints
+  out=epicrealism_naturalSinRC1VAE.safetensors
+
+https://www.gfx.cz/comfyui/models/majicmixRealistic_v7.safetensors
+  dir=checkpoints
+  out=majicmixRealistic_v7.safetensors
+
+https://www.gfx.cz/comfyui/models/realisticVisionV60B1_v20Novae.safetensors
+  dir=checkpoints
+  out=realisticVisionV60B1_v20Novae.safetensors
+
+https://www.gfx.cz/comfyui/models/BiRefNet-DIS_ep580.pth
+  dir=BiRefNet
+  out=BiRefNet-DIS_ep580.pth
+
+https://www.gfx.cz/comfyui/models/iclight_sd15_fc.safetensors
+  dir=diffusion_models
+  out=iclight_sd15_fc.safetensors
+
+https://www.gfx.cz/comfyui/models/diffusers_xl_canny_full.safetensors
+  dir=controlnet
+  out=diffusers_xl_canny_full.safetensors
+
+https://civitai.com/api/download/models/829081
+  dir=loras/sdxl
+  out=Majicproduct_v4_p3.safetensors
+
+#https://civitai.com/api/download/models/351306
+#  dir=checkpoints/sdxl
+#  out=dreamshaperXL_v21TurboDPMSDE.safetensors
+
+https://civitai.com/api/download/models/274039
+  dir=checkpoints/sd1.5
+  out=juggernaut_reborn.safetensors
+
+https://civitai.com/api/download/models/782002
+  dir=checkpoints/sdxl
+  out=juggernautXL_juggXIByRundiffusion.safetensors
+
+https://github.com/madebyollin/taesd/raw/refs/heads/main/taesd_encoder.pth
+  dir=vae_approx
+  out=taesd_encoder.pth
+
+https://github.com/madebyollin/taesd/raw/refs/heads/main/taesd_decoder.pth
+  dir=vae_approx
+  out=taesd_decoder.pth
+
+https://github.com/madebyollin/taesd/raw/refs/heads/main/taesdxl_encoder.pth
+  dir=vae_approx
+  out=taesdxl_encoder.pth
+
+https://github.com/madebyollin/taesd/raw/refs/heads/main/taesdxl_decoder.pth
+  dir=vae_approx
+  out=taesdxl_decoder.pth
+
+#This is a negative embedding, you need "NDXL" in the negative prompt.
+https://civitai.com/api/download/models/506019
+  dir=embeddings
+  out=Negative-Dynamics-XL.safetensors
+
+https://civitai.com/api/download/models/714404
+  dir=checkpoints/sdxl
+  out=MooMooE-comerceSDXL-Product-Photography.safetensors
+
+https://civitai.com/api/download/models/87153
+  dir=loras/sd1.5
+  out=add_detail_sd15.safetensors
+
+#extremely detailed (no trigger)
+https://civitai.com/api/download/models/383563
+  dir=loras/sdxl
+  out=extremely_detailed_xl.safetensors
+
+#trigwer "XCYP Product Shooting Scene"
+https://civitai.com/api/download/models/537476
+  dir=loras/sdxl
+  out=Fresh-Ideas-Product-shooting-scene_XL.safetensors
+
+#trigger flux-style
+https://civitai.com/api/download/models/700770
+  dir=loras/sdxl
+  out=flux_style_sdxl.safetensors
+
+https://civitai.com/api/download/models/298448
+  dir=loras/sdxl
+  out=WildCardX-XL-Detail-Enhancer.safetensors
+
+https://civitai.com/api/download/models/182328
+  dir=controlnet
+  out=bdsqlsz_controlllite_xl_mlsd_V2.safetensors

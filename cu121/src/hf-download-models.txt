@@ -1,0 +1,55 @@
+# Photon is a SD 1.5 model, which is less GPU-demanding, and the file size is smaller.
+# It's a good start point for users who are new to ComfyUI.
+
+#https://huggingface.co/digiplay/Photon_v1/resolve/main/photon_v1.safetensors?download=true
+#  dir=checkpoints
+#  out=photon_v1.safetensors
+
+# VAE
+
+https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors?download=true
+  dir=vae
+  out=vae-ft-mse-840000-ema-pruned.safetensors
+
+# Embeddings
+
+
+https://huggingface.co/ViperYX/BiRefNet/resolve/main/swin_large_patch4_window12_384_22kto1k.pth
+  dir=BiRefNet
+  out=swin_large_patch4_window12_384_22kto1k.pth
+
+#https://huggingface.co/RunDiffusion/Juggernaut-XL-v9/resolve/main/Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors?download=true
+#  dir=checkpoints/sdxl
+#  out=Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors
+
+#https://huggingface.co/RunDiffusion/Juggernaut-XL-Lightning/resolve/main/Juggernaut_RunDiffusionPhoto2_Lightning_4Steps.safetensors?download=true
+#  dir=checkpoints/sdxl
+#  out=Juggernaut_RunDiffusionPhoto2_Lightning_4Steps.safetensors
+
+https://huggingface.co/LyliaEngine/add-detail-xl/blob/main/add-detail-xl.safetensors
+  dir=loras
+  out=add-detail-xl.safetensors
+
+#https://huggingface.co/RunDiffusion/Juggernaut-X-v10/resolve/main/Juggernaut-X-RunDiffusion-NSFW.safetensors?download=true
+#  dir=checkpoints/sdxl
+#  out=Juggernaut-X-RunDiffusion-NSFW.safetensors
+
+https://huggingface.co/huchenlei/IC-Light-ldm/resolve/main/iclight_sd15_fbc_unet_ldm.safetensors?download=true
+  dir=unet
+  out=iclight_sd15_fbc_unet_ldm.safetensors
+
+https://huggingface.co/huchenlei/IC-Light-ldm/resolve/main/iclight_sd15_fc_unet_ldm.safetensors?download=true
+  dir=unet
+  out=iclight_sd15_fc_unet_ldm.safetensors
+
+https://huggingface.co/Afizi/4x-UltraSharp.pth/resolve/main/4x-UltraSharp.pth?download=true
+  dir=upscale_models
+  out=4x-UltraSharp.pth
+
+#https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0_0.9vae.safetensors?download=true
+#  dir=checkpoints/sdxl
+#  out=sd_xl_base_1.0_0.9vae.safetensors
+
+#https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sd_xl_refiner_1.0.safetensors?download=true
+#  dir=checkpoints/sdxl
+#  out=sd_xl_refiner_1.0.safetensors

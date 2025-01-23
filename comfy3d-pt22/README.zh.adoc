@@ -1,0 +1,53 @@
+# Comfy3D 单独镜像
+
+本镜像 `comfy3d-pt22` 不再更新。如果你需要运行旧版 Comfy3D，它可能会有用。
+
+https://hub.docker.com/r/yanwk/comfyui-boot/tags?name=comfy3d-pt22[在 <Docker Hub> 上查看]
+
+
+* 默认仅安装 ComfyUI, ComfyUI-Manager, ComfyUI-3D-Pack
+
+* Comfy3D 版本：
+** https://github.com/MrForExample/ComfyUI-3D-Pack/tree/3b4e715939376634c68aa4c1c7d4ea4a8665c098[3b4e715]
+(2024/06/23)
+
+* 开发组件：
+** CUDA dev kit (12.1)
+** Python dev package (3.11)
+** GCC C++ (11)
+
+* 关键组件：
+** torch==2.2.3+cu121
+** xformers==0.0.25.post1
+
+## 用法
+
+.使用 Docker
+[source,sh]
+----
+mkdir -p storage
+
+docker run -it --rm \
+  --name comfy3d-pt22 \
+  --gpus all \
+  -p 8188:8188 \
+  -v "$(pwd)"/storage:/root \
+  -e CLI_ARGS="" \
+  yanwk/comfyui-boot:comfy3d-pt22
+----
+
+.使用 Podman
+[source,sh]
+----
+mkdir -p storage
+
+podman run -it --rm \
+  --name comfy3d-pt22 \
+  --device nvidia.com/gpu=all \
+  --security-opt label=disable \
+  -p 8188:8188 \
+  -v "$(pwd)"/storage:/root \
+  -e CLI_ARGS="" \
+  docker.io/yanwk/comfyui-boot:comfy3d-pt22
+----
+
