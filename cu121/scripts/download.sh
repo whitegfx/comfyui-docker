@@ -19,12 +19,15 @@ cd /home/runner
     cd /home/runner/ComfyUI && git pull
 )
 
+touch /home/runner/.download-complete
+
 mkdir -p /home/runner/ComfyUI/user/default /home/runner/ComfyUI/models/BiRefNet \
 /home/runner/ComfyUI/models/loras/sdxl /home/runner/ComfyUI/models/loras/sd1.5 \
 /home/runner/ComfyUI/models/checkpoints/sdxl /home/runner/ComfyUI/models/checkpoints/sd1.5
 
 touch /home/runner/ComfyUI/user/default comfyui.log
 touch /home/runner/ComfyUI/comfyui.log
+
 
 # ComfyUI Manager
 cd /home/runner/ComfyUI/custom_nodes

@@ -24,7 +24,7 @@ RUN --mount=type=cache,target=/var/cache/zypp \
         python311-dbm \
         google-noto-sans-fonts google-noto-sans-cjk-fonts google-noto-coloremoji-fonts \
         shadow git aria2 \
-        Mesa-libGL1 libgthread-2_0-0 mc wget \
+        Mesa-libGL1 libgthread-2_0-0 mc wget curl \
     && rm /usr/lib64/python3.11/EXTERNALLY-MANAGED \
     && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 100
 
@@ -102,6 +102,12 @@ ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}\
 :/usr/local/lib/python3.11/site-packages/nvidia/nccl/lib\
 :/usr/local/lib/python3.11/site-packages/nvidia/nvjitlink/lib\
 :/usr/local/lib/python3.11/site-packages/nvidia/nvtx/lib"
+
+# Install File Browser
+RUN wget -qO- https://github.com/filebrowser/filebrowser/releases/latest/download/linux-amd64-filebrowser.tar.gz | tar xz -C /usr/local/bin
+
+# Expose the ports for both applications
+EXPOSE 8080
 
 # Create a low-privilege user
 RUN printf 'CREATE_MAIL_SPOOL=no' >> /etc/default/useradd \
