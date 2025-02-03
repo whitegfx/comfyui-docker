@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euxo pipefail
+set -euo pipefail
 
 echo "########################################"
 echo "[INFO] Downloading Civitai and Hugging Face Models..."

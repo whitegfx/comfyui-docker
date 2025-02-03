@@ -7,9 +7,9 @@
 
 # VAE
 
-https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors?download=true
-  dir=vae
-  out=vae-ft-mse-840000-ema-pruned.safetensors
+#xhttps://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors?download=true
+#  dir=vae
+#  out=vae-ft-mse-840000-ema-pruned.safetensors
 
 # Embeddings
 
@@ -26,17 +26,17 @@ https://huggingface.co/ViperYX/BiRefNet/resolve/main/swin_large_patch4_window12_
 #  dir=checkpoints/sdxl
 #  out=Juggernaut_RunDiffusionPhoto2_Lightning_4Steps.safetensors
 
-https://huggingface.co/LyliaEngine/add-detail-xl/blob/main/add-detail-xl.safetensors
-  dir=loras
-  out=add-detail-xl.safetensors
+#https://huggingface.co/LyliaEngine/add-detail-xl/resolve/main/add-detail-xl.safetensors?download=true
+#  dir=loras/sdxl
+#  out=add-detail-xl.safetensors
 
 #https://huggingface.co/RunDiffusion/Juggernaut-X-v10/resolve/main/Juggernaut-X-RunDiffusion-NSFW.safetensors?download=true
 #  dir=checkpoints/sdxl
 #  out=Juggernaut-X-RunDiffusion-NSFW.safetensors
 
-https://huggingface.co/huchenlei/IC-Light-ldm/resolve/main/iclight_sd15_fbc_unet_ldm.safetensors?download=true
-  dir=unet
-  out=iclight_sd15_fbc_unet_ldm.safetensors
+#https://huggingface.co/huchenlei/IC-Light-ldm/resolve/main/iclight_sd15_fbc_unet_ldm.safetensors?download=true
+#  dir=unet
+#  out=iclight_sd15_fbc_unet_ldm.safetensors
 
 https://huggingface.co/huchenlei/IC-Light-ldm/resolve/main/iclight_sd15_fc_unet_ldm.safetensors?download=true
   dir=unet

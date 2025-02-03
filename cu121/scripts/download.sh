@@ -4,7 +4,7 @@ echo "########################################"
 echo "[INFO] Downloading ComfyUI & Manager..."
 echo "########################################"
 
-set -euxo pipefail
+set -euxo pipefail  # Enable strict error handling
 
 # ComfyUI
 # Using stable version (has a release tag)

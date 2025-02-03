@@ -1,11 +1,11 @@
 #!/bin/bash
 
-set -euxo pipefail
+set -uxo pipefail  # Enable strict error handling
 
 #echo "An error occurred" >&2
 
 # Run user's set-proxy script
-cd /home/runner
+cd /home/runner || true
 if [ -f "/home/runner/scripts/set-proxy.sh" ] ; then
     echo "[INFO] Running set-proxy script..."
 
@@ -14,10 +14,10 @@ if [ -f "/home/runner/scripts/set-proxy.sh" ] ; then
 fi ;
 
 # Install ComfyUI
-cd /home/runner
+cd /home/runner || true
 if [ ! -f "/home/runner/.download-complete" ] ; then
     chmod +x /home/scripts/download.sh
-    bash /home/scripts/download.sh
+    bash /home/scripts/download.sh || true
 fi ;
 
 # Start File Browser
@@ -34,15 +34,15 @@ if [ -n "${FILEBROWSER_USER:-}" ] && [ -n "${FILEBROWSER_PASS:-}" ]; then
         # Initialize File Browser configuration
         echo "Initializing File Browser configuration..."
         filebrowser config init --database $FILEBROWSER_CONFIG_DIR/filebrowser.db
-
+        filebrowser -d --database $FILEBROWSER_CONFIG_DIR/filebrowser.db config set --log /home/runner/filebrowser.log
         # Add or update the admin user for File Browser
         echo "Adding or updating admin user in File Browser..."
-        filebrowser users update $FILEBROWSER_USER $FILEBROWSER_PASS --database $FILEBROWSER_CONFIG_DIR/filebrowser.db --perm.admin || \
+        filebrowser users update $FILEBROWSER_USER --database $FILEBROWSER_CONFIG_DIR/filebrowser.db --perm.admin || \
         filebrowser users add $FILEBROWSER_USER $FILEBROWSER_PASS --database $FILEBROWSER_CONFIG_DIR/filebrowser.db --perm.admin
 
         # Start File Browser
         echo "Starting File Browser..."
-        nohup filebrowser -a 0.0.0.0 -r $UPLOAD_DIRECTORY --database $FILEBROWSER_CONFIG_DIR/filebrowser.db &
+        nohup filebrowser -a 0.0.0.0 -r $UPLOAD_DIRECTORY -p 8080 --database $FILEBROWSER_CONFIG_DIR/filebrowser.db &
         touch /home/runner/.browser-complete
         # Wait for a few seconds to ensure File Browser starts properly
         sleep 5
@@ -53,7 +53,7 @@ fi ;
 
 
 # Run user's pre-start script
-cd /home/runner
+cd /home/runner || true
 if [ -f "/home/runner/scripts/pre-start.sh" ] ; then
     echo "[INFO] Running pre-start script..."
 
@@ -63,11 +63,12 @@ else
     echo "[INFO] No pre-start script found. Skipping."
 fi ;
 
+
 # Download mmodels
-cd /home/runner
+cd /home/runner || true
 if [ ! -f "/home/runner/.download-models-complete" ] ; then
     chmod +x /home/scripts/download-models.sh
-    bash /home/scripts/download-models.sh
+    bash /home/scripts/download-models.sh || true
 fi ;
 
 echo "########################################"
@@ -77,6 +78,24 @@ echo "########################################"
 export PATH="${PATH}:/home/runner/.local/bin"
 export PYTHONPYCACHEPREFIX="/home/runner/.cache/pycache"
 
-cd /home/runner
+cd /home/runner || true
 
-python3 ./ComfyUI/main.py --listen --port 8188 ${CLI_ARGS}
+# Cleanup
+if [ ! -f "/home/runner/.zypper-cleanup-complete" ] ; then
+    chmod +x /home/scripts/zypper-cleanup.sh
+    bash /home/scripts/zypper-cleanup.sh || true
+fi ;
+
+cd /home/runner  || true
+if [ ! -f "/home/runner/.download-zip-complete" ] ; then
+    chmod +x /home/scripts/download-and-extract.sh
+    bash /home/scripts/download-and-extract.sh || true
+fi ;
+
+# Retry loop to restart ComfyUI if it fails
+while true; do
+    echo "Starting ComfyUI..."
+    exec python3 ./ComfyUI/main.py --listen --port 8188 ${CLI_ARGS}
+    echo "ComfyUI crashed, restarting..."
+    sleep 3  # Optionally wait before restarting
+done
