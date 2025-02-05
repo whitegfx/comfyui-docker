@@ -3,10 +3,58 @@
 # A runtime environment for https://github.com/comfyanonymous/ComfyUI
 # Using CUDA 12.1& Python 3.11
 ################################################################################
+# === STAGE 1: Build File Browser ===
+FROM opensuse/tumbleweed:latest@sha256:5b7c53d68e9d19c3972e6c8b2aa175e4c3b3f8fa49fe8e9241e48276dd49911c AS builder
 
-FROM opensuse/tumbleweed:latest@sha256:04c64f84b82c06c57ffb0b7bf21cccf487ada1784c4e67420181f09729e5d77d
+# Set necessary environment variables
+ENV GO_VERSION=1.23.5
+ENV PATH="/usr/local/go/bin:$PATH"
+
+# Install required dependencies
+RUN zypper --non-interactive install -y \
+    git wget tar curl nodejs npm make && \
+    zypper clean --all
+
+# Install Go
+RUN wget "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" -O go.tar.gz && \
+    rm -rf /usr/local/go && \
+    tar -C /usr/local -xzf go.tar.gz && \
+    rm go.tar.gz && \
+    go version
+
+# Clone File Browser source code
+WORKDIR /build
+RUN git clone https://github.com/filebrowser/filebrowser.git && \
+    cd filebrowser && \
+    sed -i "s/^go .*/go ${GO_VERSION}/" go.mod
+
+# Update dependencies to ensure you're using the latest secure versions
+RUN cd /build/filebrowser && \
+    go get -u ./... && \
+    go mod tidy && \
+    go mod vendor  # Lock dependencies
+
+# Install pnpm manually & ensure it's in PATH
+RUN curl -fsSL https://get.pnpm.io/install.sh | sh - && \
+    ln -s /root/.local/share/pnpm/pnpm /usr/local/bin/pnpm
+
+# Verify pnpm installation
+RUN pnpm --version
+
+# Build frontend & backend
+WORKDIR /build/filebrowser
+RUN make build
+
+
+FROM opensuse/tumbleweed:latest@sha256:5b7c53d68e9d19c3972e6c8b2aa175e4c3b3f8fa49fe8e9241e48276dd49911c AS final
 
 LABEL maintainer="code@yanwk.fun"
+
+# Copy only the built binary
+COPY --from=builder /build/filebrowser/filebrowser /usr/local/bin/filebrowser
+
+# Set execution permissions
+RUN chmod +x /usr/local/bin/filebrowser
 
 # Note: GCC for InsightFace;
 #       FFmpeg for video (pip[imageio-ffmpeg] will use system FFmpeg instead of bundled).
@@ -24,12 +72,18 @@ RUN --mount=type=cache,target=/var/cache/zypp \
         python311-dbm \
         google-noto-sans-fonts google-noto-sans-cjk-fonts google-noto-coloremoji-fonts \
         shadow git aria2 \
-        Mesa-libGL1 libgthread-2_0-0 mc wget curl unzip coreutils \
+        Mesa-libGL1 libgthread-2_0-0 mc wget curl unzip \
     && rm /usr/lib64/python3.11/EXTERNALLY-MANAGED \
     && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 100
 
+#RUN --mount=type=cache,target=/var/cache/zypp \
+#    set -eu \
+#    && zypper --gpg-auto-import-keys \
+#    install --no-confirm --no-recommends \
+#    nodejs
+
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install --no-cache-dir \
+    pip install \
         --upgrade pip wheel setuptools
 
 # Install xFormers (stable version, will specify PyTorch version),
@@ -37,29 +91,16 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # Break down the steps, so we have more but smaller image layers.
 
 ARG PIP_INDEX_URL="https://download.pytorch.org/whl/cu121"
-#ARG PIP_INDEX_URL="https://download.pytorch.org/whl/nightly/cu121"
 ARG PIP_EXTRA_INDEX_URL="https://pypi.org/simple"
 
-#RUN --mount=type=cache,target=/root/.cache/pip \
-#    pip install \
-#        --dry-run xformers torchvision torchaudio
-#
-#RUN --mount=type=cache,target=/root/.cache/pip \
-#    pip install \
-#        --no-deps xformers torch torchvision torchaudio
-#
-#RUN --mount=type=cache,target=/root/.cache/pip \
-#    pip install \
-#        xformers torchvision torchaudio
-
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install --no-cache-dir \
+    pip install \
         xformers torch torchvision torchaudio
 
 # Dependencies for frequently-used
 # (Do this firstly so PIP won't be solving too many deps at one time)
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install --no-cache-dir \
+    pip install \
         -r https://raw.githubusercontent.com/comfyanonymous/ComfyUI/master/requirements.txt \
         -r https://raw.githubusercontent.com/crystian/ComfyUI-Crystools/main/requirements.txt \
         -r https://raw.githubusercontent.com/cubiq/ComfyUI_essentials/main/requirements.txt \
@@ -83,10 +124,7 @@ ENV LD_LIBRARY_PATH="/usr/local/lib64/python3.11/site-packages/torch/lib\
 :/usr/local/lib/python3.11/site-packages/nvidia/cuda_cupti/lib\
 :/usr/local/lib/python3.11/site-packages/nvidia/cuda_runtime/lib\
 :/usr/local/lib/python3.11/site-packages/nvidia/cudnn/lib\
-:/usr/local/lib/python3.11/site-packages/nvidia/cufft/lib"
-
-# More libs (not necessary, just in case)
-ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}\
+:/usr/local/lib/python3.11/site-packages/nvidia/cufft/lib\
 :/usr/local/lib/python3.11/site-packages/nvidia/cublas/lib\
 :/usr/local/lib/python3.11/site-packages/nvidia/cuda_nvrtc/lib\
 :/usr/local/lib/python3.11/site-packages/nvidia/curand/lib\
@@ -97,11 +135,8 @@ ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}\
 :/usr/local/lib/python3.11/site-packages/cusparselt/lib\
 :/usr/local/lib/python3.11/site-packages/nvidia/nvtx/lib"
 
-# Install File Browser
-RUN wget -qO- https://github.com/filebrowser/filebrowser/releases/latest/download/linux-amd64-filebrowser.tar.gz | tar xz -C /usr/local/bin
-
 # Expose the ports for both applications
-EXPOSE 8080
+EXPOSE 8188 8080
 
 # Create a low-privilege user
 RUN printf 'CREATE_MAIL_SPOOL=no' >> /etc/default/useradd \
@@ -112,17 +147,15 @@ RUN printf 'CREATE_MAIL_SPOOL=no' >> /etc/default/useradd \
 
 COPY --chown=runner:runner scripts/. /home/scripts/
 COPY --chown=runner:runner storage/scripts/. /home/runner/scripts/
+RUN chmod +x /home/scripts/*.sh
 
 USER runner:runner
 VOLUME /home/runner
 WORKDIR /home/runner
-EXPOSE 8188
-EXPOSE 8080
+
 ARG CLI_ARGS
 ENV CLI_ARGS=${CLI_ARGS}
 
-# Start systemd and rsyslog inside the container
-CMD ["/bin/bash", "/home/scripts/entrypoint.sh"]
-
-#CMD ["bash","/home/scripts/entrypoint.sh"]
+# Start the stuff
+ENTRYPOINT ["/bin/bash", "/home/scripts/entrypoint.sh"]
 #CMD ["tail", "-f", "/dev/null"]

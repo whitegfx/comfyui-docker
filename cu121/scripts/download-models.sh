@@ -2,9 +2,7 @@
 
 set -euo pipefail
 
-echo "########################################"
 echo "[INFO] Downloading Civitai and Hugging Face Models..."
-echo "########################################"
 
 # Models directory
 cd /home/runner/ComfyUI/models

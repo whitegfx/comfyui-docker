@@ -2,17 +2,6 @@
 
 set -uxo pipefail  # Enable strict error handling
 
-#echo "An error occurred" >&2
-
-# Run user's set-proxy script
-cd /home/runner || true
-if [ -f "/home/runner/scripts/set-proxy.sh" ] ; then
-    echo "[INFO] Running set-proxy script..."
-
-    chmod +x /home/runner/scripts/set-proxy.sh
-    source /home/runner/scripts/set-proxy.sh
-fi ;
-
 # Install ComfyUI
 cd /home/runner || true
 if [ ! -f "/home/runner/.download-complete" ] ; then
@@ -56,7 +45,6 @@ fi ;
 cd /home/runner || true
 if [ -f "/home/runner/scripts/pre-start.sh" ] ; then
     echo "[INFO] Running pre-start script..."
-
     chmod +x /home/runner/scripts/pre-start.sh
     source /home/runner/scripts/pre-start.sh
 else
@@ -71,10 +59,6 @@ if [ ! -f "/home/runner/.download-models-complete" ] ; then
     bash /home/scripts/download-models.sh || true
 fi ;
 
-echo "########################################"
-echo "[INFO] Starting ComfyUI..."
-echo "########################################"
-
 export PATH="${PATH}:/home/runner/.local/bin"
 export PYTHONPYCACHEPREFIX="/home/runner/.cache/pycache"
 
@@ -82,19 +66,21 @@ cd /home/runner || true
 
 # Cleanup
 if [ ! -f "/home/runner/.zypper-cleanup-complete" ] ; then
+    echo "[INFO] Running zypper-cleanup script..."
     chmod +x /home/scripts/zypper-cleanup.sh
     bash /home/scripts/zypper-cleanup.sh || true
 fi ;
 
 cd /home/runner  || true
 if [ ! -f "/home/runner/.download-zip-complete" ] ; then
+    echo "[INFO] Running download-and-extract script..."
     chmod +x /home/scripts/download-and-extract.sh
     bash /home/scripts/download-and-extract.sh || true
 fi ;
 
 # Retry loop to restart ComfyUI if it fails
 while true; do
-    echo "Starting ComfyUI..."
+    echo "[INFO] Starting ComfyUI..."
     exec python3 ./ComfyUI/main.py --listen --port 8188 ${CLI_ARGS}
     echo "ComfyUI crashed, restarting..."
     sleep 3  # Optionally wait before restarting
