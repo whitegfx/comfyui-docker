@@ -56,7 +56,8 @@ fi ;
 cd /home/runner || true
 if [ ! -f "/home/runner/.download-models-complete" ] ; then
     chmod +x /home/scripts/download-models.sh
-    bash /home/scripts/download-models.sh || true
+#    bash /home/scripts/download-models.sh || true
+    nohup bash /home/scripts/download-models.sh > /home/runner/download.log 2>&1 &
 fi ;
 
 export PATH="${PATH}:/home/runner/.local/bin"
@@ -83,5 +84,6 @@ while true; do
     echo "[INFO] Starting ComfyUI..."
     exec python3 ./ComfyUI/main.py --listen --port 8188 ${CLI_ARGS}
     echo "ComfyUI crashed, restarting..."
-    sleep 3  # Optionally wait before restarting
+    sleep 5  # Optionally wait before restarting
 done
+#CMD ["tail", "-f", "/dev/null"]
