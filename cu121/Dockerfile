@@ -159,3 +159,7 @@ ENV CLI_ARGS=${CLI_ARGS}
 # Start the stuff
 ENTRYPOINT ["/bin/bash", "/home/scripts/entrypoint.sh"]
 #CMD ["tail", "-f", "/dev/null"]
+#DOCKER_BUILDKIT=1  docker buildx build --build-arg FILEBROWSER_USER=ftpuser --build-arg FILEBROWSER_USER=ftppass --builder cloud-elensar-comfybuilder . --tag elensar/comfyui:latest --push
+#python3 -m pyftpdlib -r 60000-60002
+#pip install --user pyftpdlib
+# --use-pytorch-cross-attention --fast --force-fp16 --fp32-vae
