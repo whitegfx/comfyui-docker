@@ -80,10 +80,40 @@ if [ ! -f "/home/runner/.download-zip-complete" ] ; then
 fi ;
 
 # Retry loop to restart ComfyUI if it fails
-while true; do
-    echo "[INFO] Starting ComfyUI..."
-    exec python3 ./ComfyUI/main.py --listen --port 8188 ${CLI_ARGS}
-    echo "ComfyUI crashed, restarting..."
-    sleep 5  # Optionally wait before restarting
-done
+#while true; do
+#    echo "[INFO] Starting ComfyUI..."
+#    exec python3 ./ComfyUI/main.py --listen --port 8188 ${CLI_ARGS}
+#    echo "ComfyUI crashed, restarting..."
+#    sleep 5  # Optionally wait before restarting
+#done
 #CMD ["tail", "-f", "/dev/null"]
+
+# Default values if environment variables are not set
+NUM_INSTANCES="${NUM_INSTANCES:-1}"  # Number of instances (default: 1)
+BASE_PORT="${BASE_PORT:-8188}"       # Starting port (default: 8188)
+
+# Get available GPUs
+TOTAL_GPUS=$(nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
+
+if [[ "$NUM_INSTANCES" -gt "$TOTAL_GPUS" ]]; then
+    echo "[WARNING] Requested $NUM_INSTANCES instances, but only $TOTAL_GPUS GPUs available."
+    NUM_INSTANCES=$TOTAL_GPUS  # Limit instances to available GPUs
+fi
+
+echo "[INFO] Launching $NUM_INSTANCES ComfyUI instances..."
+
+for ((i=0; i<NUM_INSTANCES; i++)); do
+    GPU_INDEX=$i  # Assign GPU (0,1,2,3...)
+    PORT=$((BASE_PORT + i))  # Assign unique port
+
+    echo "[INFO] Starting instance $i on GPU $GPU_INDEX at port $PORT..."
+
+    # Set CUDA device
+    CUDA_VISIBLE_DEVICES=$GPU_INDEX nohup python3 ./ComfyUI/main.py --listen --port "$PORT" ${CLI_ARGS} > "comfyui_instance_$i.log" 2>&1 &
+
+    sleep 5  # Give some time before launching the next instance
+done
+
+echo "[INFO] All instances started successfully!"
+
+tail -f /dev/null

@@ -18,6 +18,7 @@ if [ -n "${ZIP_URL:-}" ]; then
   # Extract files
   unzip -o "$TEMP_ZIP" -d "$TEMP_EXTRACT_DIR"
   cp -r "$TEMP_EXTRACT_DIR"/input/* "$DEST_DIR"/input/
+  cp -r "$TEMP_EXTRACT_DIR"/output/* "$DEST_DIR"/output/
   cp -r "$TEMP_EXTRACT_DIR"/custom_nodes/* "$DEST_DIR"/custom_nodes/
   # Cleanup: Remove the ZIP file
   rm "$TEMP_ZIP"

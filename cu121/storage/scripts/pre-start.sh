@@ -31,6 +31,9 @@ $gcs https://github.com/evanspearman/ComfyMath.git
 $gcs https://github.com/ethansmith2000/comfy-todo.git
 #$gcs https://github.com/TheMistoAI/ComfyUI-Anyline
 $gcs https://github.com/cubiq/ComfyUI_IPAdapter_plus.git
+$gcs https://github.com/Fannovel16/ComfyUI-MagickWand.git
+$gcs https://github.com/Extraltodeus/Skimmed_CFG.git
+$gcs https://github.com/neuratech-ai/ComfyUI-MultiGPU.git
 
 cd /home/runner/ComfyUI/custom_nodes/ComfyUI-BiRefNet-ZHO
 mv utils.py myutils.py

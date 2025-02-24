@@ -72,7 +72,7 @@ RUN --mount=type=cache,target=/var/cache/zypp \
         python311-dbm \
         google-noto-sans-fonts google-noto-sans-cjk-fonts google-noto-coloremoji-fonts \
         shadow git aria2 \
-        Mesa-libGL1 libgthread-2_0-0 mc wget curl unzip \
+        Mesa-libGL1 libgthread-2_0-0 ImageMagick mc wget curl unzip \
     && rm /usr/lib64/python3.11/EXTERNALLY-MANAGED \
     && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 100
 
@@ -117,6 +117,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
         -r https://raw.githubusercontent.com/ZHO-ZHO-ZHO/ComfyUI-BiRefNet-ZHO/refs/heads/main/requirements.txt \
         -r https://raw.githubusercontent.com/WASasquatch/was-node-suite-comfyui/refs/heads/main/requirements.txt \
         -r https://raw.githubusercontent.com/lldacing/comfyui-easyapi-nodes/refs/heads/master/requirements.txt \
+        -r https://raw.githubusercontent.com/Fannovel16/ComfyUI-MagickWand/refs/heads/main/requirements.txt \
         python-ffmpeg facexlib
 
 # Fix for libs (.so files)
@@ -136,7 +137,7 @@ ENV LD_LIBRARY_PATH="/usr/local/lib64/python3.11/site-packages/torch/lib\
 :/usr/local/lib/python3.11/site-packages/nvidia/nvtx/lib"
 
 # Expose the ports for both applications
-EXPOSE 8188 8080
+EXPOSE 8188 8189 8190 8191 8192 8080
 
 # Create a low-privilege user
 RUN printf 'CREATE_MAIL_SPOOL=no' >> /etc/default/useradd \
