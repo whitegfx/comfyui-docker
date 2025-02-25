@@ -109,7 +109,7 @@ for ((i=0; i<NUM_INSTANCES; i++)); do
     echo "[INFO] Starting instance $i on GPU $GPU_INDEX at port $PORT..."
 
     # Set CUDA device
-    CUDA_VISIBLE_DEVICES=$GPU_INDEX nohup python3 ./ComfyUI/main.py --listen --port "$PORT" ${CLI_ARGS} > "comfyui_instance_$i.log" 2>&1 &
+    nohup python3 ./ComfyUI/main.py --cuda-device $GPU_INDEX --listen --port "$PORT" ${CLI_ARGS} > "comfyui_instance_$i.log" 2>&1 &
 
     sleep 5  # Give some time before launching the next instance
 done
